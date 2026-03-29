@@ -96,15 +96,30 @@
   font-size: 15px;
 }
 
-.login-input-group input {
-  width: 100%;
-  padding: 10px 40px;
-  border: 2px solid rgba(96, 108, 56, 0.2);
-  border-radius: 8px;
-  font-size: 14px;
-  transition: var(--transition);
-  background-color: var(--light-background);
-  color: var(--text);
+.login-input-group input:not([type="radio"]),
+  .login-input-group select,
+  .login-select {
+    width: 100%;
+    padding: 10px 40px;
+    border: 2px solid rgba(96, 108, 56, 0.2);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: var(--transition);
+    background-color: var(--light-background);
+    color: var(--text);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+
+  .login-input-group select,
+  .login-select {
+    padding-left: 14px;
+    padding-right: 34px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2214%22%20height%3D%2210%22%20viewBox%3D%220%200%2014%2010%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cpath%20d%3D%22M1%201l6%206%206-6%22%20stroke%3D%22%23607b38%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E");
+    background-position: right 12px center;
+    background-repeat: no-repeat;
+    background-size: 14px 10px;
 }
 
 .login-input-group input:focus {
@@ -360,5 +375,16 @@
   }
   .login-or {
     margin: 1rem 0;
+  }
+
+  .login-select,
+  .login-input-group select {
+    width: 100%;
+    padding: 10px 40px;
+    border: 2px solid rgba(96, 108, 56, 0.2);
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: var(--light-background);
+    color: var(--text);
   }
 }

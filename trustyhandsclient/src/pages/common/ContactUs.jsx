@@ -1,14 +1,64 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useToast } from "../../context/ToastContext";
 import "../../styles/ContactUs.css";
 
 const ContactUs = () => {
+  const { addToast } = useToast();
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: ""
+  });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 4500);
+  React.useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("th_user") || "null");
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        full_name: user.fullName || "",
+        email: user.email || ""
+      }));
+    }
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    
+    try {
+      await axios.post("http://localhost:5000/api/contact", {
+        name: formData.full_name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message
+      });
+      
+      setSubmitted(true);
+      addToast("Message sent successfully! We will contact you soon.");
+      setFormData({
+        full_name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: ""
+      });
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (err) {
+      addToast(err.response?.data?.message || "Failed to send message.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <div className="contact-page">
@@ -32,20 +82,41 @@ const ContactUs = () => {
                       id="full_name"
                       name="full_name"
                       type="text"
+                      value={formData.full_name}
+                      onChange={handleChange}
                       required
                     />
                   </div>
                   <div className="contact-form-group">
                     <label htmlFor="email">Email Address</label>
-                    <input id="email" name="email" type="email" required />
+                    <input 
+                      id="email" 
+                      name="email" 
+                      type="email" 
+                      value={formData.email}
+                      onChange={handleChange}
+                      required 
+                    />
                   </div>
                   <div className="contact-form-group">
                     <label htmlFor="phone">Phone Number</label>
-                    <input id="phone" name="phone" type="tel" />
+                    <input 
+                      id="phone" 
+                      name="phone" 
+                      type="tel" 
+                      value={formData.phone}
+                      onChange={handleChange}
+                    />
                   </div>
                   <div className="contact-form-group">
                     <label htmlFor="subject">Subject</label>
-                    <select id="subject" name="subject" required>
+                    <select 
+                      id="subject" 
+                      name="subject" 
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                    >
                       <option value="" disabled>
                         Choose a subject
                       </option>
@@ -58,10 +129,17 @@ const ContactUs = () => {
                   </div>
                   <div className="contact-form-group">
                     <label htmlFor="message">Message</label>
-                    <textarea id="message" name="message" required />
+                    <textarea 
+                      id="message" 
+                      name="message" 
+                      value={formData.message}
+                      onChange={handleChange}
+                      required 
+                    />
                   </div>
-                  <button type="submit" className="btn btn-primary">
-                    Send Message
+                  
+                  <button type="submit" className="btn btn-primary" disabled={loading}>
+                    {loading ? "Sending..." : "Send Message"}
                   </button>
                 </form>
 

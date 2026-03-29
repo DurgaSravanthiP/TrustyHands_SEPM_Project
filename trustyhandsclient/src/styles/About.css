@@ -50,33 +50,35 @@
 
 .about-founders-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
   margin-top: 20px;
 }
 
 .about-founder-card {
   background: var(--white);
   border-radius: 14px;
-  padding: 25px;
+  padding: 20px;
   text-align: center;
   box-shadow: var(--shadow);
   transition: var(--transition);
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
 .about-founder-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
 }
 
 .about-founder-img {
-  width: 130px;
-  height: 130px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   margin: 0 auto 15px;
   object-fit: cover;
-  border: 4px solid var(--light-background);
+  border: 3px solid var(--light-background);
 }
+
 
 .about-founder-name {
   font-size: 1.3rem;

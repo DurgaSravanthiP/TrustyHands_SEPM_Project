@@ -1,8 +1,28 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import "../styles/Navbar.css";
 
 const Navbar = () => {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const userData = localStorage.getItem("th_user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    } else {
+      setUser(null);
+    }
+  }, [location.pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("th_user");
+    localStorage.removeItem("th_logged_in");
+    setUser(null);
+    navigate("/");
+  };
+
   const navLinkClass = ({ isActive }) => (isActive ? "active" : "");
 
   return (
@@ -10,7 +30,7 @@ const Navbar = () => {
       <div className="container navbar-container">
         <div className="navbar-logo">
           <i className="fas fa-hands-helping"></i>
-          <span>Trustyhands</span>
+          <span>TrustyHands</span>
         </div>
         <nav className="navbar-nav">
           <ul>
@@ -42,12 +62,28 @@ const Navbar = () => {
           </ul>
         </nav>
         <div className="navbar-auth-buttons">
-          <NavLink to="/login" className="btn btn-outline">
-            Log In
-          </NavLink>
-          <NavLink to="/register" className="btn btn-primary">
-            Sign Up
-          </NavLink>
+          {user ? (
+            <>
+              <NavLink
+                to={`/${user.role}-dashboard`}
+                className="btn btn-primary"
+              >
+                Dashboard
+              </NavLink>
+              <button onClick={handleLogout} className="btn btn-outline" style={{ cursor: "pointer" }}>
+                Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login" className="btn btn-outline">
+                Log In
+              </NavLink>
+              <NavLink to="/register" className="btn btn-primary">
+                Sign Up
+              </NavLink>
+            </>
+          )}
         </div>
       </div>
     </header>

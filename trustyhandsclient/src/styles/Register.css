@@ -96,7 +96,7 @@
   font-size: 15px;
 }
 
-.register-input-group input {
+.register-input-group input:not([type="radio"]) {
   width: 100%;
   padding: 10px 40px;
   border: 2px solid rgba(96, 108, 56, 0.2);
@@ -305,6 +305,54 @@
   transform: rotate(180deg);
 }
 
+.worker-summary {
+  margin-bottom: 1rem;
+  background: #f8faf3;
+  border: 1px solid rgba(96, 108, 56, 0.2);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.worker-summary p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #3a4a2f;
+  font-weight: 500;
+}
+
+.worker-details-form .grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 0.8rem;
+}
+
+.worker-details-form .register-input-group {
+  margin-bottom: 0.5rem;
+}
+
+.worker-details-form label {
+  display: block;
+  font-size: 0.85rem;
+  color: #4f5e3f;
+  margin-bottom: 0.35rem;
+}
+
+.register-file-label input {
+  display: block;
+  margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .worker-details-form .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 480px) {
   .register-container {
     padding: 16px;
@@ -343,5 +391,54 @@
   }
   .register-or {
     margin: 1rem 0;
+  }
+}
+
+.register-select {
+  width: 100%;
+  padding: 10px 40px;
+  border: 2px solid rgba(96, 108, 56, 0.2);
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: var(--light-background);
+  color: var(--text);
+}
+.register-full-form .register-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 1rem;
+}
+
+.register-full-form .register-input-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: #4f5e3f;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.register-full-form .register-input-group input:not([type="radio"]),
+.register-full-form .register-input-group select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid rgba(96, 108, 56, 0.2);
+  border-radius: 8px;
+  background-color: var(--light-background);
+  color: var(--text);
+}
+
+.register-full-form .register-file-label input {
+  display: block;
+  margin-top: 8px;
+}
+
+.register-full-form .register-password-toggle {
+  right: 10px;
+}
+
+@media (max-width: 768px) {
+  .register-full-form .register-grid-2 {
+    grid-template-columns: 1fr;
   }
 }

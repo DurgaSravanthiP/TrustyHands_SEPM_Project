@@ -33,8 +33,9 @@ const HowItWorks = () => {
     {
       question: "How does payment work?",
       answer:
-        "Customers pay securely through our platform. Workers receive payment directly to their account after service completion, minus our small service fee.",
+        "Payments are handled directly between you and the worker at the service location. TrustyHands does NOT process payments or take a commission from the service fee. We recommend mutually deciding the final price before the work begins.",
     },
+
   ];
 
   const customerSteps = [

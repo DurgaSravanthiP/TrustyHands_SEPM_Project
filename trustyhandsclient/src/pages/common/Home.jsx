@@ -5,12 +5,17 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
+    const user = localStorage.getItem("th_user");
+    setIsLoggedIn(!!user);
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % 3);
     }, 5000);
     return () => clearInterval(interval);
   }, []);
+
 
   const showSlide = (index) => {
     setCurrentSlide(index);
@@ -33,14 +38,16 @@ const Home = () => {
               Book verified workers for any task at your convenience. Fast,
               reliable, and hassle-free service.
             </p>
-            <div className="home-hero-buttons">
-              <button className="btn btn-primary" onClick={openModal}>
-                Find a Worker
-              </button>
-              <button className="btn btn-secondary" onClick={openModal}>
-                Join as a Worker
-              </button>
-            </div>
+            {!isLoggedIn && (
+              <div className="home-hero-buttons">
+                <button className="btn btn-primary" onClick={openModal}>
+                  Find a Worker
+                </button>
+                <button className="btn btn-secondary" onClick={openModal}>
+                  Join as a Worker
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -54,14 +61,16 @@ const Home = () => {
               From plumbing to cleaning, we connect you with the best
               professionals in your area.
             </p>
-            <div className="home-hero-buttons">
-              <button className="btn btn-primary" onClick={openModal}>
-                Find a Worker
-              </button>
-              <button className="btn btn-secondary" onClick={openModal}>
-                Join as a Worker
-              </button>
-            </div>
+            {!isLoggedIn && (
+              <div className="home-hero-buttons">
+                <button className="btn btn-primary" onClick={openModal}>
+                  Find a Worker
+                </button>
+                <button className="btn btn-secondary" onClick={openModal}>
+                  Join as a Worker
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -75,14 +84,16 @@ const Home = () => {
               Earn competitive income by offering your skills and services to
               thousands of customers.
             </p>
-            <div className="home-hero-buttons">
-              <button className="btn btn-primary" onClick={openModal}>
-                Find a Worker
-              </button>
-              <button className="btn btn-secondary" onClick={openModal}>
-                Join as a Worker
-              </button>
-            </div>
+            {!isLoggedIn && (
+              <div className="home-hero-buttons">
+                <button className="btn btn-primary" onClick={openModal}>
+                  Find a Worker
+                </button>
+                <button className="btn btn-secondary" onClick={openModal}>
+                  Join as a Worker
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -369,13 +380,15 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              <button
-                className="btn btn-primary"
-                style={{ marginTop: "25px", padding: "10px 25px" }}
-                onClick={openModal}
-              >
-                Find a Worker Now
-              </button>
+              {!isLoggedIn && (
+                <button
+                  className="btn btn-primary"
+                  style={{ marginTop: "25px", padding: "10px 25px" }}
+                  onClick={openModal}
+                >
+                  Find a Worker Now
+                </button>
+              )}
             </div>
             <div className="home-customer-image">
               <img
@@ -506,13 +519,15 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-              <button
-                className="btn btn-secondary"
-                style={{ marginTop: "25px", padding: "10px 25px" }}
-                onClick={openModal}
-              >
-                Join as a Worker
-              </button>
+              {!isLoggedIn && (
+                <button
+                  className="btn btn-secondary"
+                  style={{ marginTop: "25px", padding: "10px 25px" }}
+                  onClick={openModal}
+                >
+                  Join as a Worker
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -600,14 +615,16 @@ const Home = () => {
             Join thousands of satisfied customers and skilled professionals on
             our platform today.
           </p>
-          <div className="home-hero-buttons">
-            <button className="btn btn-darker" onClick={openModal}>
-              Find a Worker
-            </button>
-            <button className="btn btn-secondary" onClick={openModal}>
-              Join as a Worker
-            </button>
-          </div>
+          {!isLoggedIn && (
+            <div className="home-hero-buttons">
+              <button className="btn btn-darker" onClick={openModal}>
+                Find a Worker
+              </button>
+              <button className="btn btn-secondary" onClick={openModal}>
+                Join as a Worker
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
