@@ -26,10 +26,10 @@ export const submitFeedback = async (req, res) => {
 // Create a new booking request
 export const createBooking = async (req, res) => {
   try {
-    const { customerId, workerId, service, date, time, address, description, price } = req.body;
+    const { customerId, workerId, service, date, time, address, description, proposedPrice } = req.body;
     
-    if (!customerId || !workerId || !service || !date || !time || !address) {
-      return res.status(400).json({ message: "All required fields must be provided" });
+    if (!customerId || !workerId || !service || !date || !time || !address || !proposedPrice) {
+      return res.status(400).json({ message: "All required fields must be provided (including estimated price)" });
     }
 
     const newBooking = await Booking.create({
@@ -40,7 +40,7 @@ export const createBooking = async (req, res) => {
       time,
       address,
       description,
-      price
+      proposedPrice
     });
 
     return res.status(201).json({ message: "Booking requested successfully", data: newBooking });

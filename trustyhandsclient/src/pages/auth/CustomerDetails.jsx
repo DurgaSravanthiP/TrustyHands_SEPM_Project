@@ -3,10 +3,38 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const indianStates = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", 
-  "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", 
-  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", 
-  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Chandigarh", "Puducherry", "Other"
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+  "Delhi",
+  "Chandigarh",
+  "Puducherry",
+  "Other",
 ];
 
 const CustomerDetails = () => {
@@ -60,9 +88,12 @@ const CustomerDetails = () => {
         },
       };
 
-      const response = await axios.post("http://localhost:5000/api/auth/register", payload);
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        payload,
+      );
       const user = response.data.user;
-      
+
       const safeUser = {
         id: user._id,
         fullName: user.fullName,
@@ -98,6 +129,15 @@ const CustomerDetails = () => {
             <p>
               <strong>Role:</strong> {step1.role || "-"}
             </p>
+            <p>
+              <strong>DOB:</strong> {step1.dob || "-"}
+            </p>
+            <p>
+              <strong>Gender:</strong>{" "}
+              {step1.gender
+                ? step1.gender.charAt(0).toUpperCase() + step1.gender.slice(1)
+                : "-"}
+            </p>
           </div>
         )}
 
@@ -118,66 +158,154 @@ const CustomerDetails = () => {
             handleSubmit();
           }}
         >
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px", marginBottom: "20px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "20px",
+              marginBottom: "20px",
+            }}
+          >
             <div className="register-input-group" style={{ marginBottom: 0 }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>Mobile Number <span style={{ color: "red" }}>*</span></label>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "600",
+                  color: "#4f5e3f",
+                  fontSize: "0.9rem",
+                }}
+              >
+                Mobile Number <span style={{ color: "red" }}>*</span>
+              </label>
               <input
                 type="text"
                 value={phone}
                 placeholder="+91 XXXXX XXXXX"
                 onChange={(e) => setPhone(e.target.value)}
-                style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px" }}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  border: "2px solid rgba(96, 108, 56, 0.2)",
+                  borderRadius: "8px",
+                }}
                 required
               />
             </div>
 
             <div className="register-input-group" style={{ marginBottom: 0 }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>State / UT <span style={{ color: "red" }}>*</span></label>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "600",
+                  color: "#4f5e3f",
+                  fontSize: "0.9rem",
+                }}
+              >
+                State / UT <span style={{ color: "red" }}>*</span>
+              </label>
               <select
                 value={state}
                 onChange={(e) => setState(e.target.value)}
-                style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px", background: "#fefae0" }}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  border: "2px solid rgba(96, 108, 56, 0.2)",
+                  borderRadius: "8px",
+                  background: "#fefae0",
+                }}
                 required
               >
                 <option value="">-- Select State --</option>
                 {indianStates.map((st) => (
-                  <option key={st} value={st}>{st}</option>
+                  <option key={st} value={st}>
+                    {st}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div className="register-input-group" style={{ marginBottom: 0 }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>City <span style={{ color: "red" }}>*</span></label>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "600",
+                  color: "#4f5e3f",
+                  fontSize: "0.9rem",
+                }}
+              >
+                City <span style={{ color: "red" }}>*</span>
+              </label>
               <input
                 type="text"
                 value={city}
                 placeholder="Enter City"
                 onChange={(e) => setCity(e.target.value)}
-                style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px" }}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  border: "2px solid rgba(96, 108, 56, 0.2)",
+                  borderRadius: "8px",
+                }}
                 required
               />
             </div>
 
             <div className="register-input-group" style={{ marginBottom: 0 }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>Pincode <span style={{ color: "red" }}>*</span></label>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "600",
+                  color: "#4f5e3f",
+                  fontSize: "0.9rem",
+                }}
+              >
+                Pincode <span style={{ color: "red" }}>*</span>
+              </label>
               <input
                 type="text"
                 value={pincode}
                 placeholder="e.g. 500001"
                 onChange={(e) => setPincode(e.target.value)}
-                style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px" }}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  border: "2px solid rgba(96, 108, 56, 0.2)",
+                  borderRadius: "8px",
+                }}
                 required
               />
             </div>
 
-            <div className="register-input-group" style={{ gridColumn: "1 / -1", marginBottom: 0 }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>Address Line <span style={{ color: "red" }}>*</span></label>
+            <div
+              className="register-input-group"
+              style={{ gridColumn: "1 / -1", marginBottom: 0 }}
+            >
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "600",
+                  color: "#4f5e3f",
+                  fontSize: "0.9rem",
+                }}
+              >
+                Address Line <span style={{ color: "red" }}>*</span>
+              </label>
               <input
                 type="text"
                 value={line}
                 placeholder="House Number, Street Name, Area"
                 onChange={(e) => setLine(e.target.value)}
-                style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px" }}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  border: "2px solid rgba(96, 108, 56, 0.2)",
+                  borderRadius: "8px",
+                }}
                 required
               />
             </div>

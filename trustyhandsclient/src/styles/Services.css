@@ -190,22 +190,62 @@
 .srv-join-worker {
   background: linear-gradient(135deg, var(--primary), var(--dark-background));
   color: var(--white);
-  padding: 40px 0;
+  padding: 60px 0;
   text-align: center;
   margin: 40px 0;
   border-radius: 15px;
 }
 
 .srv-join-worker h2 {
-  font-size: 1.8rem;
-  margin-bottom: 12px;
+  font-size: 1.9rem;
+  margin-bottom: 14px;
 }
 
 .srv-join-worker p {
   max-width: 600px;
-  margin: 0 auto 20px;
+  margin: 0 auto 28px;
   font-size: 1rem;
   opacity: 0.9;
+}
+
+.srv-join-btn {
+  display: inline-block;
+  padding: 12px 32px;
+  background: var(--accent);
+  color: var(--white);
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(188, 108, 37, 0.4);
+}
+
+.srv-join-btn:hover {
+  background: #a55a1d;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(188, 108, 37, 0.5);
+}
+
+/* Section Header with underline accent */
+.srv-section-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.srv-section-header h2 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.srv-section-underline {
+  width: 60px;
+  height: 3px;
+  background: var(--accent);
+  margin: 0 auto;
+  border-radius: 2px;
 }
 
 .srv-testimonials {
@@ -254,6 +294,16 @@
   font-family: Georgia, serif;
   line-height: 1;
   z-index: 0;
+}
+
+.srv-testimonial-quote {
+  font-size: 0.88rem;
+  color: var(--text-light);
+  line-height: 1.65;
+  font-style: italic;
+  margin: 10px 0;
+  position: relative;
+  z-index: 1;
 }
 
 .srv-client {
@@ -317,15 +367,18 @@
 }
 
 .srv-faq-answer {
-  padding: 18px;
+  padding: 0 18px;
   background: var(--light-background);
-  display: none;
   font-size: 0.9rem;
   line-height: 1.6;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
 }
 
 .srv-faq-answer.active {
-  display: block;
+  max-height: 200px;
+  padding: 16px 18px;
 }
 
 .srv-modal-header {

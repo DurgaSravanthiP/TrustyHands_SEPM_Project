@@ -7,18 +7,40 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
+  const [isAdminCandidate, setIsAdminCandidate] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const adminAccounts = [
+    { email: "admin1@trustyhands.com", password: "adminpassword1" },
+    { email: "admin2@trustyhands.com", password: "adminpassword2" },
+    { email: "admin3@trustyhands.com", password: "adminpassword3" },
+    { email: "admin4@trustyhands.com", password: "adminpassword4" },
+  ];
+
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    // no prefill for security after logout/back navigation
+    localStorage.removeItem("th_saved_admin");
+    setEmail("");
+    setPassword("");
+    setRole("");
+    setIsAdminCandidate(false);
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrors([]);
     const newErrors = [];
 
-    if (!role) {
+    const adminMatch = adminAccounts.find(
+      (admin) => admin.email.toLowerCase() === email.trim().toLowerCase(),
+    );
+    const isAdmin = Boolean(adminMatch);
+
+    if (!isAdmin && !role) {
       newErrors.push("Please choose your role.");
     }
 
@@ -38,24 +60,37 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
+      const isAdminCandidate = adminAccounts.find(
+        (admin) => admin.email.toLowerCase() === email.trim().toLowerCase(),
+      );
+      const roleToSend = isAdminCandidate ? "admin" : role;
+      const passwordToUse = isAdminCandidate
+        ? isAdminCandidate.password
+        : password;
+
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         {
           email: email.trim(),
-          password,
-          role,
+          password: passwordToUse,
+          role: roleToSend,
         },
       );
+
+      // once login initiated, clear to avoid showing after navigation
+      setEmail("");
+      setPassword("");
+      setRole("");
 
       const user = response.data.user;
       localStorage.setItem("th_user", JSON.stringify(user));
       localStorage.setItem("th_logged_in", "true");
 
-      if (role === "customer") {
+      if (roleToSend === "customer") {
         navigate("/customer-dashboard");
-      } else if (role === "worker") {
+      } else if (roleToSend === "worker") {
         navigate("/worker-dashboard");
-      } else if (role === "admin") {
+      } else if (roleToSend === "admin") {
         navigate("/admin-dashboard");
       } else {
         navigate("/");
@@ -101,66 +136,148 @@ const Login = () => {
 
           <h1 className="login-form-title">Welcome Back</h1>
 
-          <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-            <div className="login-input-group role-radio-group" style={{ marginBottom: "5px" }}>
-              <label style={{ display: "block", marginBottom: "10px", fontWeight: "600", color: "#4f5e3f" }}>Login As</label>
-              <div style={{ display: "flex", gap: "20px", alignItems: "center", background: "#f8faf3", padding: "12px 15px", borderRadius: "8px", border: "1px solid rgba(96, 108, 56, 0.2)" }}>
-                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: "500" }}>
+          <form
+            onSubmit={handleLogin}
+            style={{ display: "flex", flexDirection: "column", gap: "15px" }}
+          >
+            <div
+              className="login-input-group role-radio-group"
+              style={{ marginBottom: "5px" }}
+            >
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "10px",
+                  fontWeight: "600",
+                  color: "#4f5e3f",
+                }}
+              >
+                Login As
+              </label>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "20px",
+                  alignItems: "center",
+                  background: "#f8faf3",
+                  padding: "12px 15px",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(96, 108, 56, 0.2)",
+                }}
+              >
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                  }}
+                >
                   <input
                     type="radio"
                     name="role"
                     value="customer"
                     checked={role === "customer"}
                     onChange={(e) => setRole(e.target.value)}
-                    required
-                    style={{ width: "18px", height: "18px", cursor: "pointer", accentColor: "var(--primary)", padding: 0 }}
+                    required={!isAdminCandidate}
+                    disabled={isAdminCandidate}
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      cursor: isAdminCandidate ? "not-allowed" : "pointer",
+                      accentColor: "var(--primary)",
+                      padding: 0,
+                    }}
                   />
                   <span>Customer</span>
                 </label>
-                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: "500" }}>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                  }}
+                >
                   <input
                     type="radio"
                     name="role"
                     value="worker"
                     checked={role === "worker"}
                     onChange={(e) => setRole(e.target.value)}
-                    required
-                    style={{ width: "18px", height: "18px", cursor: "pointer", accentColor: "var(--primary)", padding: 0 }}
+                    required={!isAdminCandidate}
+                    disabled={isAdminCandidate}
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      cursor: isAdminCandidate ? "not-allowed" : "pointer",
+                      accentColor: "var(--primary)",
+                      padding: 0,
+                    }}
                   />
                   <span>Worker</span>
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontWeight: "500" }}>
-                  <input
-                    type="radio"
-                    name="role"
-                    value="admin"
-                    checked={role === "admin"}
-                    onChange={(e) => setRole(e.target.value)}
-                    required
-                    style={{ width: "18px", height: "18px", cursor: "pointer", accentColor: "var(--primary)", padding: 0 }}
-                  />
-                  <span>Admin</span>
                 </label>
               </div>
             </div>
 
             <div className="login-input-group" style={{ marginBottom: "0" }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f" }}>Email Address</label>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "600",
+                  color: "#4f5e3f",
+                }}
+              >
+                Email Address
+              </label>
               <div style={{ position: "relative" }}>
-                <i className="fas fa-envelope input-icon" style={{ zIndex: 2 }}></i>
+                <i
+                  className="fas fa-envelope input-icon"
+                  style={{ zIndex: 2 }}
+                ></i>
                 <input
                   type="email"
                   placeholder="name@example.com"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  style={{ width: "100%", padding: "12px", paddingLeft: "40px" }}
+                  onChange={(e) => {
+                    const incoming = e.target.value;
+                    setEmail(incoming);
+                    const matched = adminAccounts.find(
+                      (admin) =>
+                        admin.email.toLowerCase() === incoming.toLowerCase(),
+                    );
+                    if (matched) {
+                      setIsAdminCandidate(true);
+                      setRole("");
+                    } else {
+                      setIsAdminCandidate(false);
+                      setRole("");
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    paddingLeft: "40px",
+                  }}
                 />
               </div>
             </div>
 
             <div className="login-input-group" style={{ marginBottom: "0" }}>
-              <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f" }}>Password</label>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "8px",
+                  fontWeight: "600",
+                  color: "#4f5e3f",
+                }}
+              >
+                Password
+              </label>
               <div style={{ position: "relative" }}>
                 <i className="fas fa-lock input-icon" style={{ zIndex: 2 }}></i>
                 <input
@@ -169,20 +286,34 @@ const Login = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  style={{ width: "100%", padding: "12px", paddingLeft: "40px", paddingRight: "40px" }}
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    paddingLeft: "40px",
+                    paddingRight: "40px",
+                  }}
                 />
                 <span
                   className="login-password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
-                  style={{ position: "absolute", right: "12px", top: "50%", transform: "translateY(-50%)", cursor: "pointer", zIndex: 2 }}
+                  style={{
+                    position: "absolute",
+                    right: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    cursor: "pointer",
+                    zIndex: 2,
+                  }}
                 >
-                  <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                  <i
+                    className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}
+                  ></i>
                 </span>
               </div>
             </div>
 
             <div className="login-recover" style={{ marginTop: "-5px" }}>
-              <a href="#!">Forgot Password?</a>
+              <Link to="/forgot-password">Forgot Password?</Link>
             </div>
 
             <button
@@ -197,7 +328,11 @@ const Login = () => {
 
           <div className="login-links" style={{ marginTop: "20px" }}>
             <p>Don't have an account yet?</p>
-            <Link to="/register" className="login-switch-btn" style={{ fontSize: "1rem" }}>
+            <Link
+              to="/register"
+              className="login-switch-btn"
+              style={{ fontSize: "1rem" }}
+            >
               Sign Up Here
             </Link>
           </div>

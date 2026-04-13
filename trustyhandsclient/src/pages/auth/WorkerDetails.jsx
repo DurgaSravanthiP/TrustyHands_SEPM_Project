@@ -3,21 +3,62 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const indianStates = [
-  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", 
-  "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", 
-  "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", 
-  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Chandigarh", "Puducherry", "Other"
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+  "Delhi",
+  "Chandigarh",
+  "Puducherry",
+  "Other",
 ];
 
 const workerSkills = [
-  "Plumbing Services", "Electrical Work", "Deep Cleaning", "Carpentry", "Painting Services", "AC Service", 
-  "Packers & Movers", "Kitchen Cleaning", "Event Staffing", "Home Sanitization", "Babysitting", 
-  "Gardening Services", "Bathroom Cleaning", "Fridge Repair", "TV Repair", "Cook Services", 
-  "Washing Machine Repair", "Car Detailing"
+  "Plumbing Services",
+  "Electrical Work",
+  "Deep Cleaning",
+  "Carpentry",
+  "Painting Services",
+  "AC Service",
+  "Packers & Movers",
+  "Kitchen Cleaning",
+  "Event Staffing",
+  "Home Sanitization",
+  "Babysitting",
+  "Gardening Services",
+  "Bathroom Cleaning",
+  "Fridge Repair",
+  "TV Repair",
+  "Cook Services",
+  "Washing Machine Repair",
+  "Car Detailing",
 ];
 
 const WorkerDetails = () => {
-
   const [phone, setPhone] = useState("+91 ");
   const [line, setLine] = useState("");
   const [city, setCity] = useState("");
@@ -137,6 +178,15 @@ const WorkerDetails = () => {
             <p>
               <strong>Role:</strong> {step1.role || "-"}
             </p>
+            <p>
+              <strong>DOB:</strong> {step1.dob || "-"}
+            </p>
+            <p>
+              <strong>Gender:</strong>{" "}
+              {step1.gender
+                ? step1.gender.charAt(0).toUpperCase() + step1.gender.slice(1)
+                : "-"}
+            </p>
           </div>
         )}
 
@@ -150,118 +200,278 @@ const WorkerDetails = () => {
           </div>
         )}
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px", marginBottom: "20px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "20px",
+            marginBottom: "20px",
+          }}
+        >
           {/* Row 1: Demographics */}
           <div className="register-input-group" style={{ marginBottom: 0 }}>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>Mobile Number <span style={{ color: "red" }}>*</span></label>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "#4f5e3f",
+                fontSize: "0.9rem",
+              }}
+            >
+              Mobile Number <span style={{ color: "red" }}>*</span>
+            </label>
             <input
               type="text"
               value={phone}
               placeholder="+91 XXXXX XXXXX"
               onChange={(e) => setPhone(e.target.value)}
-              style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px" }}
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "2px solid rgba(96, 108, 56, 0.2)",
+                borderRadius: "8px",
+              }}
               required
             />
           </div>
 
           <div className="register-input-group" style={{ marginBottom: 0 }}>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>State / UT <span style={{ color: "red" }}>*</span></label>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "#4f5e3f",
+                fontSize: "0.9rem",
+              }}
+            >
+              State / UT <span style={{ color: "red" }}>*</span>
+            </label>
             <select
               value={addressState}
               onChange={(e) => setAddressState(e.target.value)}
-              style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px", background: "#fefae0" }}
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "2px solid rgba(96, 108, 56, 0.2)",
+                borderRadius: "8px",
+                background: "#fefae0",
+              }}
               required
             >
               <option value="">-- Select State --</option>
               {indianStates.map((st) => (
-                <option key={st} value={st}>{st}</option>
+                <option key={st} value={st}>
+                  {st}
+                </option>
               ))}
             </select>
           </div>
 
           <div className="register-input-group" style={{ marginBottom: 0 }}>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>City <span style={{ color: "red" }}>*</span></label>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "#4f5e3f",
+                fontSize: "0.9rem",
+              }}
+            >
+              City <span style={{ color: "red" }}>*</span>
+            </label>
             <input
               type="text"
               value={city}
               placeholder="Enter City"
               onChange={(e) => setCity(e.target.value)}
-              style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px" }}
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "2px solid rgba(96, 108, 56, 0.2)",
+                borderRadius: "8px",
+              }}
               required
             />
           </div>
 
           <div className="register-input-group" style={{ marginBottom: 0 }}>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>Pincode <span style={{ color: "red" }}>*</span></label>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "#4f5e3f",
+                fontSize: "0.9rem",
+              }}
+            >
+              Pincode <span style={{ color: "red" }}>*</span>
+            </label>
             <input
               type="text"
               value={pincode}
               placeholder="e.g. 500001"
               onChange={(e) => setPincode(e.target.value)}
-              style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px" }}
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "2px solid rgba(96, 108, 56, 0.2)",
+                borderRadius: "8px",
+              }}
               required
             />
           </div>
 
-          <div className="register-input-group" style={{ gridColumn: "1 / -1", marginBottom: 0 }}>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>Full Address Line <span style={{ color: "red" }}>*</span></label>
+          <div
+            className="register-input-group"
+            style={{ gridColumn: "1 / -1", marginBottom: 0 }}
+          >
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "#4f5e3f",
+                fontSize: "0.9rem",
+              }}
+            >
+              Full Address Line <span style={{ color: "red" }}>*</span>
+            </label>
             <input
               type="text"
               value={line}
               placeholder="House Number, Street Name, Area"
               onChange={(e) => setLine(e.target.value)}
-              style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px" }}
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "2px solid rgba(96, 108, 56, 0.2)",
+                borderRadius: "8px",
+              }}
               required
             />
           </div>
-          
-          <div className="form-section-divider" style={{ gridColumn: "1 / -1", height: "1px", background: "rgba(96, 108, 56, 0.2)", margin: "10px 0" }}></div>
+
+          <div
+            className="form-section-divider"
+            style={{
+              gridColumn: "1 / -1",
+              height: "1px",
+              background: "rgba(96, 108, 56, 0.2)",
+              margin: "10px 0",
+            }}
+          ></div>
 
           {/* Row 2: Professional Details */}
           <div className="register-input-group" style={{ marginBottom: 0 }}>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>Primary Skill <span style={{ color: "red" }}>*</span></label>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "#4f5e3f",
+                fontSize: "0.9rem",
+              }}
+            >
+              Primary Skill <span style={{ color: "red" }}>*</span>
+            </label>
             <select
               value={skill}
               onChange={(e) => setSkill(e.target.value)}
-              style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px", background: "#fefae0" }}
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "2px solid rgba(96, 108, 56, 0.2)",
+                borderRadius: "8px",
+                background: "#fefae0",
+              }}
               required
             >
               <option value="">-- Select Skill --</option>
               {workerSkills.map((s) => (
-                <option key={s} value={s}>{s}</option>
+                <option key={s} value={s}>
+                  {s}
+                </option>
               ))}
             </select>
-
-
           </div>
 
           <div className="register-input-group" style={{ marginBottom: 0 }}>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>Years of Experience <span style={{ color: "red" }}>*</span></label>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "#4f5e3f",
+                fontSize: "0.9rem",
+              }}
+            >
+              Years of Experience <span style={{ color: "red" }}>*</span>
+            </label>
             <input
               placeholder="e.g. 5 Years"
               value={experience}
               onChange={(e) => setExperience(e.target.value)}
-              style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px" }}
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "2px solid rgba(96, 108, 56, 0.2)",
+                borderRadius: "8px",
+              }}
               required
             />
           </div>
 
           <div className="register-input-group" style={{ marginBottom: 0 }}>
-            <label style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>Service Area Radius</label>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "#4f5e3f",
+                fontSize: "0.9rem",
+              }}
+            >
+              Service Area Radius (km)
+            </label>
             <input
-              placeholder="e.g. 10km (Optional)"
+              placeholder="e.g. 10"
               value={serviceArea}
               onChange={(e) => setServiceArea(e.target.value)}
-              style={{ width: "100%", padding: "12px", border: "2px solid rgba(96, 108, 56, 0.2)", borderRadius: "8px" }}
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "2px solid rgba(96, 108, 56, 0.2)",
+                borderRadius: "8px",
+              }}
             />
           </div>
-          
-          <div className="form-section-divider" style={{ gridColumn: "1 / -1", height: "1px", background: "rgba(96, 108, 56, 0.2)", margin: "10px 0" }}></div>
+
+          <div
+            className="form-section-divider"
+            style={{
+              gridColumn: "1 / -1",
+              height: "1px",
+              background: "rgba(96, 108, 56, 0.2)",
+              margin: "10px 0",
+            }}
+          ></div>
 
           {/* Row 3: Documents */}
           <div className="register-input-group" style={{ marginBottom: 0 }}>
-            <label className="register-file-label" style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>
-              Upload ID Proof (Aadhaar/PAN) <span style={{ color: "red" }}>*</span>
+            <label
+              className="register-file-label"
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "#4f5e3f",
+                fontSize: "0.9rem",
+              }}
+            >
+              Upload ID Proof (Aadhaar/PAN){" "}
+              <span style={{ color: "red" }}>*</span>
               <input
                 type="file"
                 accept="image/*,.pdf"
@@ -270,11 +480,24 @@ const WorkerDetails = () => {
                 required
               />
             </label>
-            {idProofName && <small style={{ color: "var(--primary)" }}>Selected: {idProofName}</small>}
+            {idProofName && (
+              <small style={{ color: "var(--primary)" }}>
+                Selected: {idProofName}
+              </small>
+            )}
           </div>
 
           <div className="register-input-group" style={{ marginBottom: 0 }}>
-            <label className="register-file-label" style={{ display: "block", marginBottom: "8px", fontWeight: "600", color: "#4f5e3f", fontSize: "0.9rem" }}>
+            <label
+              className="register-file-label"
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontWeight: "600",
+                color: "#4f5e3f",
+                fontSize: "0.9rem",
+              }}
+            >
               Upload Profile Photo
               <input
                 type="file"
@@ -283,7 +506,11 @@ const WorkerDetails = () => {
                 style={{ marginTop: "8px" }}
               />
             </label>
-            {profilePhotoName && <small style={{ color: "var(--primary)" }}>Selected: {profilePhotoName}</small>}
+            {profilePhotoName && (
+              <small style={{ color: "var(--primary)" }}>
+                Selected: {profilePhotoName}
+              </small>
+            )}
           </div>
         </div>
 
@@ -291,9 +518,16 @@ const WorkerDetails = () => {
           className="register-submit-btn"
           disabled={isSubmitting}
           onClick={handleSubmit}
-          style={{ padding: "14px", fontSize: "1.05rem", width: "100%", marginTop: "10px" }}
+          style={{
+            padding: "14px",
+            fontSize: "1.05rem",
+            width: "100%",
+            marginTop: "10px",
+          }}
         >
-          {isSubmitting ? "Submitting securely..." : "Submit Registration for Approval"}
+          {isSubmitting
+            ? "Submitting securely..."
+            : "Submit Registration for Approval"}
         </button>
       </div>
     </div>

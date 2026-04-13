@@ -138,9 +138,76 @@ const categories = [
   { key: "movers", label: "Movers" },
 ];
 
+const testimonialsData = [
+  {
+    id: 1,
+    icon: "fa-faucet",
+    service: "Plumbing Services",
+    quote:
+      "Trustyhands saved me when my kitchen sink burst on a Sunday! Found a plumber within 20 minutes who fixed everything professionally. The platform is incredibly easy to use and the quality of service exceeded my expectations.",
+    name: "Sarah Johnson",
+    role: "Homeowner in New York",
+    initials: "SJ",
+  },
+  {
+    id: 2,
+    icon: "fa-broom",
+    service: "Cleaning Services",
+    quote:
+      "The deep cleaning service was exceptional! The team arrived on time, brought all their own supplies, and left my home spotless. I've booked them for monthly cleanings now. Highly recommend Trustyhands for all home services!",
+    name: "Michael Chen",
+    role: "Busy Professional",
+    initials: "MC",
+  },
+  {
+    id: 3,
+    icon: "fa-bolt",
+    service: "Electrical Work",
+    quote:
+      "I needed several electrical outlets installed in my home office. The electrician from Trustyhands was knowledgeable, efficient, and cleaned up after himself. Pricing was transparent and fair. Will definitely use again!",
+    name: "Emma Rodriguez",
+    role: "Remote Worker",
+    initials: "ER",
+  },
+];
+
+const faqsData = [
+  {
+    id: 1,
+    question: "Are all workers background verified?",
+    answer:
+      "Yes, all service professionals on TrustyHands undergo a thorough background check, identity verification, and skills assessment before they are allowed to offer services on our platform. Your safety is our top priority.",
+  },
+  {
+    id: 2,
+    question: "How does payment work?",
+    answer:
+      "Payment is handled securely through our platform. You only pay once the job is complete and you're satisfied. We support multiple payment methods including credit/debit cards and UPI. No hidden fees.",
+  },
+  {
+    id: 3,
+    question: "Can I reschedule my booking?",
+    answer:
+      "Absolutely! You can reschedule or cancel a booking up to 2 hours before the scheduled time, free of charge, directly from your customer dashboard.",
+  },
+  {
+    id: 4,
+    question: "What if I'm not satisfied with the service?",
+    answer:
+      "We have a 100% satisfaction guarantee. If you're not happy with the service, contact our support team within 24 hours and we'll arrange a re-do at no extra cost or issue a full refund.",
+  },
+  {
+    id: 5,
+    question: "How are workers rated and reviewed?",
+    answer:
+      "After every completed service, customers can leave a star rating and written review. These are publicly visible on the worker's profile and help maintain the quality of our marketplace.",
+  },
+];
+
 const Services = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [openFaq, setOpenFaq] = useState(null);
 
   const filteredServices = useMemo(() => {
     let result = servicesData;
@@ -157,6 +224,10 @@ const Services = () => {
     }
     return result;
   }, [selectedCategory, searchTerm]);
+
+  const toggleFaq = (id) => {
+    setOpenFaq(openFaq === id ? null : id);
+  };
 
   return (
     <div className="srv-page">
@@ -211,10 +282,71 @@ const Services = () => {
         </div>
       </section>
 
+      {/* Want to Offer Your Services? CTA */}
       <section className="srv-join-worker srv-section">
         <div className="container">
-          <h2>Trustyhands Professional Marketplace</h2>
-          <p>Connect with verified experts for all your domestic and technical needs.</p>
+          <h2>Want to Offer Your Services?</h2>
+          <p>
+            Join thousands of skilled professionals earning competitive income by offering your
+            expertise to our community of customers.
+          </p>
+          <a href="/register" className="srv-join-btn">
+            Join as a Worker
+          </a>
+        </div>
+      </section>
+
+      {/* Customer Testimonials */}
+      <section className="srv-testimonials">
+        <div className="container">
+          <div className="srv-section-header">
+            <h2>Customer Testimonials</h2>
+            <div className="srv-section-underline"></div>
+          </div>
+          <div className="srv-testimonial-container">
+            {testimonialsData.map((t) => (
+              <div key={t.id} className="srv-testimonial">
+                <div className="srv-testimonial-header">
+                  <i className={`fas ${t.icon}`}></i>
+                  <strong>{t.service}</strong>
+                </div>
+                <p className="srv-testimonial-quote">"{t.quote}"</p>
+                <div className="srv-client">
+                  <div className="srv-client-avatar">{t.initials}</div>
+                  <div className="srv-client-info">
+                    <h4>{t.name}</h4>
+                    <p>{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Frequently Asked Questions */}
+      <section className="srv-faqs">
+        <div className="container">
+          <div className="srv-section-header">
+            <h2>Frequently Asked Questions</h2>
+            <div className="srv-section-underline"></div>
+          </div>
+          <div className="srv-faq-container">
+            {faqsData.map((faq) => (
+              <div key={faq.id} className="srv-faq-item">
+                <div
+                  className="srv-faq-question"
+                  onClick={() => toggleFaq(faq.id)}
+                >
+                  <span>{faq.question}</span>
+                  <i className={`fas fa-chevron-${openFaq === faq.id ? "up" : "down"}`}></i>
+                </div>
+                <div className={`srv-faq-answer ${openFaq === faq.id ? "active" : ""}`}>
+                  {faq.answer}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </div>

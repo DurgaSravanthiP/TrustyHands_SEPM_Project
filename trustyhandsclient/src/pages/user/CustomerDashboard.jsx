@@ -176,7 +176,7 @@ const CustomerDashboard = () => {
                        <span><i className="fas fa-user-clock"></i> {w.workerDetails?.experience} Yrs</span>
                     </div>
                     <div className="worker-location-row">
-                       <i className="fas fa-map-pin"></i> Serves {w.workerDetails?.serviceArea || 'Guntur'}
+                       <i className="fas fa-map-pin"></i> {w.address?.city || 'Guntur'} | Serves {w.workerDetails?.serviceArea || '15'} km
                     </div>
                     <button className="btn-hire-compact" onClick={() => setSelectedWorker(w)}>Hire Professional</button>
                   </div>
@@ -196,7 +196,7 @@ const CustomerDashboard = () => {
                <div className="table-pro-container">
                  <table className="table-pro">
                     <thead>
-                       <tr><th>Professional</th><th>Task</th><th>Schedule</th><th>Fees</th><th>Status</th></tr>
+                       <tr><th>Professional</th><th>Task</th><th>Schedule</th><th>Status</th></tr>
                     </thead>
                     <tbody>
                        {bookings.map(b => (
@@ -204,7 +204,6 @@ const CustomerDashboard = () => {
                             <td>{capitalize(b.workerId?.fullName)}</td>
                             <td>{b.service}</td>
                             <td>{b.date} at {b.time}</td>
-                            <td><strong>{b.finalPrice ? `₹${b.finalPrice}` : 'Negotiating'}</strong></td>
                             <td><span className={`status-badge badge-${b.status}`}>{b.status}</span></td>
                          </tr>
                        ))}

@@ -8,13 +8,15 @@ export const registerUser = async (req, res) => {
       email,
       password,
       role,
+      dob,
+      gender,
       phone,
       address,
       workerDetails
     } = req.body;
 
-    if (!fullName || !email || !password || !role || !phone || !address) {
-      return res.status(400).json({ message: "Missing required fields" });
+    if (!fullName || !email || !password || !role || !dob || !gender || !phone || !address) {
+      return res.status(400).json({ message: "Missing required fields (fullName, email, password, role, dob, gender, phone, address)" });
     }
 
     if (!["customer", "worker", "admin"].includes(role)) {
@@ -33,6 +35,8 @@ export const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      dob,
+      gender,
       phone,
       address,
     };
@@ -64,13 +68,17 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password, role } = req.body;
 
-    if (!email || !password || !role) {
+    if (!email || !password) {
       return res.status(400).json({ message: "Missing credentials" });
     }
 
     const user = await User.findOne({ email });
-    if (!user || user.role !== role) {
-      return res.status(401).json({ message: "Invalid email/role or password" });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    if (role && user.role !== role) {
+      return res.status(401).json({ message: "Invalid role for this user" });
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -148,4 +156,28 @@ export const updateUserProfile = async (req, res) => {
     console.error(err);
     return res.status(500).json({ message: "Server error updating profile" });
   }
-};
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and new password are required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error resetting password" });
+  }
+};

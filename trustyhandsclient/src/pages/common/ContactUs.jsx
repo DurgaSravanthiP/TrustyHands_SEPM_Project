@@ -194,7 +194,7 @@ const ContactUs = () => {
                     </div>
                     <div className="contact-info-content">
                       <h3>Hours</h3>
-                      <p>Mon-Sat 9am - 8pm</p>
+                      <p>Mon - Sat: 9:00 AM - 8:00 PM</p>
                     </div>
                   </div>
                 </div>
@@ -207,7 +207,7 @@ const ContactUs = () => {
               <h3>Visit Our Guntur Office</h3>
               <p>
                 <i className="fas fa-map-marker-alt" /> Plot No. 45, Srinagar
-                Colony
+                Colony, Guntur, AP 522006
               </p>
               <p>
                 <i className="fas fa-clock" /> Open today: 9:00 AM - 8:00 PM
