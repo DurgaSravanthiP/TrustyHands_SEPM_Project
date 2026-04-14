@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import LocationFetcher from "../../components/LocationFetcher";
 
 const indianStates = [
   "Andhra Pradesh",
@@ -327,17 +328,32 @@ const WorkerDetails = () => {
             className="register-input-group"
             style={{ gridColumn: "1 / -1", marginBottom: 0 }}
           >
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: "600",
-                color: "#4f5e3f",
-                fontSize: "0.9rem",
-              }}
-            >
-              Full Address Line <span style={{ color: "red" }}>*</span>
-            </label>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontWeight: "600",
+                  color: "#4f5e3f",
+                  fontSize: "0.9rem",
+                  margin: 0
+                }}
+              >
+                Full Address Line <span style={{ color: "red" }}>*</span>
+              </label>
+              <LocationFetcher onLocationFetched={(data) => {
+                const { address, display_name } = data;
+                if (address.city || address.town || address.village) {
+                  setCity(address.city || address.town || address.village);
+                }
+                if (address.state) {
+                  setAddressState(address.state);
+                }
+                if (address.postcode) {
+                  setPincode(address.postcode);
+                }
+                setLine(display_name);
+              }} />
+            </div>
             <input
               type="text"
               value={line}

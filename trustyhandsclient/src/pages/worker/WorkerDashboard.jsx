@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../context/ToastContext";
 import { capitalize } from "../../utils/formatters";
+import { compressImage } from "../../utils/imageUtils";
 import "../../styles/Dashboard.css";
 
 const WorkerDashboard = () => {
@@ -24,8 +25,16 @@ const WorkerDashboard = () => {
     phone: "",
     dob: "",
     gender: "",
-    workerDetails: { skill: "", experience: "", serviceArea: "" },
+    profilePhoto: "",
+    workerDetails: {
+      skill: "",
+      experience: "",
+      serviceArea: "",
+      profilePhoto: "",
+    },
   });
+  const [profilePhotoPreview, setProfilePhotoPreview] = useState("");
+  const [profilePhotoData, setProfilePhotoData] = useState("");
   const [saveLoading, setSaveLoading] = useState(false);
 
   useEffect(() => {
@@ -51,12 +60,25 @@ const WorkerDashboard = () => {
         phone: res.data.user.phone,
         dob: res.data.user.dob ? res.data.user.dob.split("T")[0] : "",
         gender: res.data.user.gender || "",
-        workerDetails: res.data.user.workerDetails || {
-          skill: "",
-          experience: "",
-          serviceArea: "",
+        profilePhoto:
+          res.data.user.profilePhoto ||
+          res.data.user.workerDetails?.profilePhoto ||
+          "",
+        workerDetails: {
+          skill: res.data.user.workerDetails?.skill || "",
+          experience: res.data.user.workerDetails?.experience || "",
+          serviceArea: res.data.user.workerDetails?.serviceArea || "",
+          profilePhoto:
+            res.data.user.workerDetails?.profilePhoto ||
+            res.data.user.profilePhoto ||
+            "",
         },
       });
+      setProfilePhotoPreview(
+        res.data.user.profilePhoto ||
+          res.data.user.workerDetails?.profilePhoto ||
+          "",
+      );
     } catch (err) {
       addToast("Profile sync failed", "error");
     }
@@ -117,21 +139,70 @@ const WorkerDashboard = () => {
     }
   };
 
+  const handleProfilePhotoChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    addToast("Uploading photo...", "info");
+    try {
+      const compressed = await compressImage(file, 150, 0.6);
+      setProfilePhotoData(compressed);
+      setProfilePhotoPreview(compressed);
+      const res = await axios.put(
+        `http://localhost:5000/api/auth/profile/${user._id}`,
+        {
+          profilePhoto: compressed,
+          workerDetails: {
+            ...profileData.workerDetails,
+            profilePhoto: compressed,
+          },
+        },
+      );
+      setUser(res.data.user);
+      const local = JSON.parse(localStorage.getItem("th_user") || "{}");
+      if (local) {
+        local.photoUpdated = true;
+        localStorage.setItem("th_user", JSON.stringify(local));
+      }
+      addToast("Profile photo updated!");
+    } catch (err) {
+      console.error(err);
+      addToast("Photo update failed — try a smaller image", "error");
+    }
+  };
+
+  const isBookingCompletable = (bookingDate) => {
+    const today = new Date().toISOString().split("T")[0];
+    return bookingDate === today;
+  };
+
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setSaveLoading(true);
     try {
+      const payload = {
+        ...profileData,
+        profilePhoto: profilePhotoData || profileData.profilePhoto,
+        workerDetails: {
+          ...profileData.workerDetails,
+          profilePhoto:
+            profilePhotoData || profileData.workerDetails.profilePhoto,
+        },
+      };
       const res = await axios.put(
         `http://localhost:5000/api/auth/profile/${user._id}`,
-        profileData,
+        payload,
       );
       setUser(res.data.user);
-      const local = JSON.parse(localStorage.getItem("th_user"));
-      local.fullName = res.data.user.fullName;
-      localStorage.setItem("th_user", JSON.stringify(local));
+      const local = JSON.parse(localStorage.getItem("th_user") || "{}");
+      if (local) {
+        local.fullName = res.data.user.fullName;
+        local.photoUpdated = true;
+        localStorage.setItem("th_user", JSON.stringify(local));
+      }
       setIsEditing(false);
-      addToast("Credentials updated successfully!");
+      addToast("Profile updated successfully!");
     } catch (err) {
+      console.error(err);
       addToast("Update failed", "error");
     } finally {
       setSaveLoading(false);
@@ -147,6 +218,37 @@ const WorkerDashboard = () => {
     return (
       <div className="dashboard-wrapper">Wait... Portal Initializing...</div>
     );
+
+  const renderHeader = () => (
+    <div className="dashboard-topbar">
+      <div className="profile-summary-row">
+        <div className="profile-photo-box">
+          {profilePhotoPreview ? (
+            <img src={profilePhotoPreview} alt="profile" />
+          ) : (
+            <span>{user.fullName?.charAt(0)?.toUpperCase() || "W"}</span>
+          )}
+        </div>
+        <div>
+          <p className="small-meta">Welcome back</p>
+          <h3>Welcome, {user.fullName}!</h3>
+          <p className="subtext">
+            Manage your bookings, approvals, and profile from one place.
+          </p>
+        </div>
+      </div>
+      <div className="profile-photo-upload">
+        <label className="upload-button">
+          Upload Photo
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleProfilePhotoChange}
+          />
+        </label>
+      </div>
+    </div>
+  );
 
   const renderContent = () => {
     switch (activeTab) {
@@ -405,6 +507,12 @@ const WorkerDashboard = () => {
                                 padding: "6px 12px",
                                 fontSize: "0.8rem",
                               }}
+                              disabled={!isBookingCompletable(b.date)}
+                              title={
+                                !isBookingCompletable(b.date)
+                                  ? "You can mark as complete only on the scheduled date"
+                                  : "Mark booking as completed"
+                              }
                               onClick={() => updateStatus(b._id, "completed")}
                             >
                               Complete
@@ -465,22 +573,106 @@ const WorkerDashboard = () => {
         );
       case "Profile":
         return (
-          <div className="content-inner">
+          <div className="content-inner slide-in">
             <h2 className="console-title">Identity Settings</h2>
 
-            <div className="dashboard-content-card profile-section-card">
-              <div className="profile-settings-header">
-                <h3>General Identity</h3>
-                {!isEditing && (
+            {/* Profile Photo Card - always visible */}
+            <div
+              className="card-pro animated-card"
+              style={{
+                marginBottom: "20px",
+                display: "flex",
+                alignItems: "center",
+                gap: "24px",
+              }}
+            >
+              <div
+                style={{
+                  width: 90,
+                  height: 90,
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  border: "3px solid var(--primary)",
+                  background: "#f0f2eb",
+                  flexShrink: 0,
+                }}
+              >
+                {profilePhotoPreview ? (
+                  <img
+                    src={profilePhotoPreview}
+                    alt="profile"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "2rem",
+                      fontWeight: 800,
+                      color: "var(--primary)",
+                    }}
+                  >
+                    {profileData.fullName?.charAt(0)?.toUpperCase() || "W"}
+                  </div>
+                )}
+              </div>
+              <div>
+                <p
+                  style={{
+                    margin: "0 0 4px",
+                    fontWeight: 700,
+                    fontSize: "1rem",
+                  }}
+                >
+                  {profileData.fullName}
+                </p>
+                <p
+                  style={{
+                    margin: "0 0 10px",
+                    fontSize: "0.85rem",
+                    color: "var(--accent)",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {profileData.workerDetails.skill}
+                </p>
+                <label
+                  className="upload-button btn-hover-effect"
+                  style={{ fontSize: "0.82rem", padding: "7px 14px" }}
+                >
+                  <i className="fas fa-camera"></i>&nbsp; Change Photo
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePhotoChange}
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Fields Card */}
+            <div className="profile-section-card animated-card">
+              {!isEditing && (
+                <div className="profile-settings-header">
+                  <h3>General Identity</h3>
                   <button
-                    className="btn-orange-rect"
+                    className="btn-orange-rect btn-hover-effect"
                     style={{ padding: "6px 15px", fontSize: "0.85rem" }}
                     onClick={() => setIsEditing(true)}
                   >
-                    <i className="fas fa-edit"></i> Edit Credentials
+                    <i className="fas fa-edit"></i>&nbsp; Edit Credentials
                   </button>
-                )}
-              </div>
+                </div>
+              )}
 
               <form onSubmit={handleProfileUpdate}>
                 <div className="profile-grid">
@@ -499,12 +691,8 @@ const WorkerDashboard = () => {
                     />
                   </div>
                   <div className="profile-input-group">
-                    <label>Skill Set</label>
-                    <input
-                      type="text"
-                      value={profileData.workerDetails.skill}
-                      readOnly={true}
-                    />
+                    <label>Email Address</label>
+                    <input type="email" value={profileData.email} disabled />
                   </div>
                   <div className="profile-input-group">
                     <label>Mobile Number</label>
@@ -521,23 +709,23 @@ const WorkerDashboard = () => {
                     />
                   </div>
                   <div className="profile-input-group">
-                    <label>Date of Birth</label>
+                    <label>Skill Set</label>
                     <input
-                      type="date"
-                      value={profileData.dob}
-                      readOnly={true}
+                      type="text"
+                      value={profileData.workerDetails.skill}
+                      readOnly
                     />
+                  </div>
+                  <div className="profile-input-group">
+                    <label>Date of Birth</label>
+                    <input type="date" value={profileData.dob} readOnly />
                   </div>
                   <div className="profile-input-group">
                     <label>Gender</label>
-                    <input
-                      type="text"
-                      value={profileData.gender}
-                      readOnly={true}
-                    />
+                    <input type="text" value={profileData.gender} readOnly />
                   </div>
                   <div className="profile-input-group">
-                    <label>Experience (Yrs)</label>
+                    <label>Experience (Years)</label>
                     <input
                       type="text"
                       value={profileData.workerDetails.experience}
@@ -553,11 +741,8 @@ const WorkerDashboard = () => {
                       }
                     />
                   </div>
-                  <div
-                    className="profile-input-group"
-                    style={{ gridColumn: "1 / -1" }}
-                  >
-                    <label>Authorized Service Area (km)</label>
+                  <div className="profile-input-group">
+                    <label>Service Area (km)</label>
                     <input
                       type="text"
                       value={profileData.workerDetails.serviceArea}
@@ -579,16 +764,20 @@ const WorkerDashboard = () => {
                   <div
                     style={{ marginTop: "25px", display: "flex", gap: "10px" }}
                   >
-                    <button type="submit" className="btn-primary-rect">
-                      Update Info
+                    <button
+                      type="submit"
+                      className="btn-primary-rect btn-hover-effect"
+                      disabled={saveLoading}
+                    >
+                      {saveLoading ? "Saving..." : "Save Changes"}
                     </button>
                     <button
                       type="button"
-                      className="btn-orange-rect"
+                      className="btn-orange-rect btn-hover-effect"
                       style={{
                         background: "#f8f8f8",
                         color: "#666",
-                        border: "none",
+                        border: "1px solid #ddd",
                       }}
                       onClick={() => setIsEditing(false)}
                     >
@@ -634,7 +823,10 @@ const WorkerDashboard = () => {
           </div>
         </ul>
       </aside>
-      <main className="dashboard-content">{renderContent()}</main>
+      <main className="dashboard-content">
+        {renderHeader()}
+        {renderContent()}
+      </main>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useToast } from "../context/ToastContext";
+import LocationFetcher from "./LocationFetcher";
 import "../styles/Register.css";
 
 const BookingModal = ({ worker, onClose, onBookingComplete }) => {
@@ -119,7 +120,12 @@ const BookingModal = ({ worker, onClose, onBookingComplete }) => {
           </div>
 
           <div className="register-input-group">
-            <label>Service Address</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <label style={{ margin: 0 }}>Service Address</label>
+              <LocationFetcher onLocationFetched={(data) => {
+                 setFormData({ ...formData, address: data.display_name });
+              }} />
+            </div>
             <input
               type="text"
               name="address"
