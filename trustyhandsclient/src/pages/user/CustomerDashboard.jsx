@@ -36,6 +36,8 @@ const CustomerDashboard = () => {
     email: "",
     phone: "",
     profilePhoto: "",
+    dob: "",
+    gender: "",
     address: { line: "", city: "", state: "", pincode: "" },
   });
   const [profilePhotoPreview, setProfilePhotoPreview] = useState("");
@@ -47,12 +49,28 @@ const CustomerDashboard = () => {
     if (!userData || userData.role !== "customer") {
       navigate("/login");
     } else {
+      const lastTab = localStorage.getItem("th_activeTab") || "Home";
+      setActiveTab(lastTab);
       fetchFullProfile(userData.id || userData._id);
       fetchBookings(userData.id || userData._id);
       fetchReviews(userData.id || userData._id);
       fetchWorkers();
     }
   }, [navigate]);
+
+  useEffect(() => {
+    if (activeTab !== "Home") {
+      localStorage.setItem("th_activeTab", activeTab);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.setItem("th_activeTab", activeTab);
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [activeTab]);
 
   const fetchFullProfile = async (userId) => {
     try {
@@ -65,6 +83,8 @@ const CustomerDashboard = () => {
         email: res.data.user.email,
         phone: res.data.user.phone,
         profilePhoto: res.data.user.profilePhoto || "",
+        dob: res.data.user.dob || "",
+        gender: res.data.user.gender || "",
         address: res.data.user.address || {
           line: "",
           city: "",
@@ -108,7 +128,7 @@ const CustomerDashboard = () => {
     try {
       const res = await axios.get("http://localhost:5000/api/admin/workers");
       const approved = (res.data.workers || []).filter(
-        (w) => w.workerDetails?.status === "approved",
+        (w) => w.workerDetails?.status === "approved" && !w.isSuspended,
       );
       setWorkers(approved);
     } catch (err) {
@@ -136,7 +156,6 @@ const CustomerDashboard = () => {
       }
       addToast("Profile photo updated!");
     } catch (err) {
-      console.error(err);
       addToast("Photo update failed — try a smaller image", "error");
     }
   };
@@ -181,7 +200,6 @@ const CustomerDashboard = () => {
       setIsEditing(false);
       addToast("Profile updated successfully!");
     } catch (err) {
-      console.error(err);
       addToast("Update failed", "error");
     } finally {
       setSaveLoading(false);

@@ -1,24 +1,24 @@
 import React from "react";
 import { capitalize } from "../../../utils/formatters";
 
-const MyReviewsTab = ({ myReviews }) => {
+const ReviewsTab = ({ myReviews }) => {
   return (
     <div className="content-inner slide-in">
-      <h2 className="console-title">My Reviews</h2>
+      <h2 className="console-title">Expert Feedback</h2>
       {myReviews.length === 0 ? (
         <div
           className="card-pro animated-card"
           style={{ textAlign: "center", padding: "40px" }}
         >
-          No reviews logged.
+          No reviews yet.
         </div>
       ) : (
         <div className="table-pro-container animated-card">
           <table className="table-pro">
             <thead>
               <tr>
-                <th>Worker Name</th>
-                <th>Work Type</th>
+                <th>Customer Name</th>
+                <th>Service Type</th>
                 <th>Rating</th>
                 <th>Message</th>
               </tr>
@@ -26,8 +26,8 @@ const MyReviewsTab = ({ myReviews }) => {
             <tbody>
               {myReviews.map((f) => (
                 <tr key={f._id}>
-                  <td>{capitalize(f.workerId?.fullName)}</td>
-                  <td>{f.workerId?.workerDetails?.skill || "N/A"}</td>
+                  <td>{capitalize(f.customerId?.fullName)}</td>
+                  <td>{f.customerId?.service || "N/A"}</td>
                   <td>
                     <div
                       style={{
@@ -82,4 +82,4 @@ const MyReviewsTab = ({ myReviews }) => {
   );
 };
 
-export default MyReviewsTab;
+export default ReviewsTab;

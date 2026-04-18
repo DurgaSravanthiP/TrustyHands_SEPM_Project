@@ -6,11 +6,19 @@ import Message from "../models/Message.js";
 export const getAdminStats = async (req, res) => {
   try {
     const usersCount = await User.countDocuments({ role: "customer" });
-    const workersCount = await User.countDocuments({ role: "worker", "workerDetails.status": "approved" });
-    const pendingWorkersCount = await User.countDocuments({ role: "worker", "workerDetails.status": "pending" });
+    const workersCount = await User.countDocuments({
+      role: "worker",
+      "workerDetails.status": "approved",
+    });
+    const pendingWorkersCount = await User.countDocuments({
+      role: "worker",
+      "workerDetails.status": "pending",
+    });
     const bookingsCount = await Booking.countDocuments();
-    
-    return res.status(200).json({ usersCount, workersCount, pendingWorkersCount, bookingsCount });
+
+    return res
+      .status(200)
+      .json({ usersCount, workersCount, pendingWorkersCount, bookingsCount });
   } catch (err) {
     return res.status(500).json({ message: "Server error" });
   }
@@ -44,9 +52,16 @@ export const suspendUser = async (req, res) => {
   try {
     const { id } = req.params;
     const { isSuspended, reason } = req.body;
-    
-    const user = await User.findByIdAndUpdate(id, { isSuspended, suspensionReason: reason }, { new: true });
-    return res.status(200).json({ message: `User ${isSuspended ? 'suspended' : 'unsuspended'}`, user });
+
+    const user = await User.findByIdAndUpdate(
+      id,
+      { isSuspended, suspensionReason: reason },
+      { new: true },
+    );
+    return res.status(200).json({
+      message: `User ${isSuspended ? "suspended" : "unsuspended"}`,
+      user,
+    });
   } catch (err) {
     return res.status(500).json({ message: "Server error" });
   }
@@ -55,11 +70,16 @@ export const suspendUser = async (req, res) => {
 // ... existing controllers ...
 export const getPendingWorkers = async (req, res) => {
   try {
-    const pending = await User.find({ role: "worker", "workerDetails.status": "pending" }).select("fullName email phone role workerDetails");
-    return res.status(200).json({ message: "Pending workers fetched", pending });
+    const pending = await User.find({
+      role: "worker",
+      "workerDetails.status": "pending",
+    });
+    return res
+      .status(200)
+      .json({ success: true, message: "Pending workers fetched", pending });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -76,10 +96,10 @@ export const getAllUsers = async (req, res) => {
 export const getAllWorkers = async (req, res) => {
   try {
     const workers = await User.find({ role: "worker" }).select("-password");
-    return res.status(200).json({ workers });
+    return res.status(200).json({ success: true, workers });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -88,17 +108,23 @@ export const updateWorkerStatus = async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
     if (!["approved", "rejected", "pending"].includes(status)) {
-      return res.status(400).json({ message: "Invalid status" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid status" });
     }
     const worker = await User.findOne({ _id: id, role: "worker" });
-    if (!worker) return res.status(404).json({ message: "Worker not found" });
+    if (!worker)
+      return res
+        .status(404)
+        .json({ success: false, message: "Worker not found" });
     worker.workerDetails.status = status;
     worker.markModified("workerDetails");
     await worker.save();
-    return res.status(200).json({ message: "Status updated", worker });
+    return res
+      .status(200)
+      .json({ success: true, message: "Status updated", worker });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
-

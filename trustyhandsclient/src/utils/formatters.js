@@ -15,3 +15,11 @@ export const formatDate = (dateString) => {
     year: "numeric",
   });
 };
+
+export const generateRandomRating = (workerId) => {
+  const seed = workerId
+    .split("")
+    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const random = ((seed * 9301 + 49297) % 233280) / 233280;
+  return Math.round((3 + random * 2) * 10) / 10;
+};

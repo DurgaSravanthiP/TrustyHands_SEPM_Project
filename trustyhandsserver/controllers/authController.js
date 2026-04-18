@@ -26,12 +26,10 @@ export const registerUser = async (req, res) => {
       !phone ||
       !address
     ) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Missing required fields (fullName, email, password, role, dob, gender, phone, address)",
-        });
+      return res.status(400).json({
+        message:
+          "Missing required fields (fullName, email, password, role, dob, gender, phone, address)",
+      });
     }
 
     if (!["customer", "worker", "admin"].includes(role)) {
@@ -40,6 +38,13 @@ export const registerUser = async (req, res) => {
 
     const existing = await User.findOne({ email });
     if (existing) {
+      if (existing.isSuspended) {
+        return res
+          .status(403)
+          .json({
+            message: "This account has been suspended. Please contact support.",
+          });
+      }
       return res.status(409).json({ message: "Email already registered" });
     }
 
@@ -63,11 +68,9 @@ export const registerUser = async (req, res) => {
         !workerDetails?.experience ||
         !workerDetails?.idProof
       ) {
-        return res
-          .status(400)
-          .json({
-            message: "Worker skill, experience and idProof are required",
-          });
+        return res.status(400).json({
+          message: "Worker skill, experience and idProof are required",
+        });
       }
       userPayload.workerDetails = {
         skill: workerDetails.skill,
@@ -81,12 +84,10 @@ export const registerUser = async (req, res) => {
 
     const user = await User.create(userPayload);
 
-    return res
-      .status(201)
-      .json({
-        message: "User created",
-        user: { ...user.toObject(), password: undefined },
-      });
+    return res.status(201).json({
+      message: "User created",
+      user: { ...user.toObject(), password: undefined },
+    });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ message: "Server error" });
@@ -108,6 +109,14 @@ export const loginUser = async (req, res) => {
 
     if (role && user.role !== role) {
       return res.status(401).json({ message: "Invalid role for this user" });
+    }
+
+    if (user.isSuspended) {
+      return res
+        .status(403)
+        .json({
+          message: "Your account has been suspended. Please contact support.",
+        });
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -169,27 +178,32 @@ export const updateUserProfile = async (req, res) => {
     if (profilePhoto) setFields.profilePhoto = profilePhoto;
 
     if (address) {
-      if (address.line)    setFields["address.line"]    = address.line;
-      if (address.city)    setFields["address.city"]    = address.city;
-      if (address.state)   setFields["address.state"]   = address.state;
+      if (address.line) setFields["address.line"] = address.line;
+      if (address.city) setFields["address.city"] = address.city;
+      if (address.state) setFields["address.state"] = address.state;
       if (address.pincode) setFields["address.pincode"] = address.pincode;
     }
 
     if (workerDetails) {
-      if (workerDetails.skill)        setFields["workerDetails.skill"]        = workerDetails.skill;
-      if (workerDetails.experience)   setFields["workerDetails.experience"]   = workerDetails.experience;
-      if (workerDetails.serviceArea)  setFields["workerDetails.serviceArea"]  = workerDetails.serviceArea;
-      if (workerDetails.profilePhoto) setFields["workerDetails.profilePhoto"] = workerDetails.profilePhoto;
+      if (workerDetails.skill)
+        setFields["workerDetails.skill"] = workerDetails.skill;
+      if (workerDetails.experience)
+        setFields["workerDetails.experience"] = workerDetails.experience;
+      if (workerDetails.serviceArea)
+        setFields["workerDetails.serviceArea"] = workerDetails.serviceArea;
+      if (workerDetails.profilePhoto)
+        setFields["workerDetails.profilePhoto"] = workerDetails.profilePhoto;
     }
 
     // Use $set + runValidators:false so partial updates don't fail required-field checks
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { $set: setFields },
-      { new: true, runValidators: false }
+      { new: true, runValidators: false },
     ).select("-password");
 
-    if (!updatedUser) return res.status(404).json({ message: "User not found" });
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
 
     return res.status(200).json({
       message: "Profile updated successfully",

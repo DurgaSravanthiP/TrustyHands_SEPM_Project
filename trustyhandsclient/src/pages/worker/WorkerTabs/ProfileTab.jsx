@@ -1,5 +1,4 @@
 import React from "react";
-import LocationFetcher from "../../../components/LocationFetcher";
 
 const ProfileTab = ({
   isEditing,
@@ -9,12 +8,6 @@ const ProfileTab = ({
   handleProfileUpdate,
   saveLoading,
 }) => {
-  const formatDate = (date) => {
-    if (!date) return "";
-    const d = new Date(date);
-    return d.toISOString().split("T")[0];
-  };
-
   const parseDate = (dateStr) => {
     if (!dateStr) return "";
     return new Date(dateStr).toISOString().split("T")[0];
@@ -28,7 +21,7 @@ const ProfileTab = ({
         {/* Header: only show when NOT editing */}
         {!isEditing && (
           <div className="profile-settings-header">
-            <h3>General Identity</h3>
+            <h3>Professional Identity</h3>
             <button
               className="btn-orange-rect btn-hover-effect"
               style={{ padding: "6px 15px", fontSize: "0.85rem" }}
@@ -43,14 +36,7 @@ const ProfileTab = ({
           <div className="profile-grid">
             <div className="profile-input-group">
               <label>Full Name</label>
-              <input
-                type="text"
-                value={profileData.fullName}
-                readOnly={!isEditing}
-                onChange={(e) =>
-                  setProfileData({ ...profileData, fullName: e.target.value })
-                }
-              />
+              <input type="text" value={profileData.fullName} readOnly />
             </div>
             <div className="profile-input-group">
               <label>Email Address</label>
@@ -89,13 +75,7 @@ const ProfileTab = ({
               <input
                 type="text"
                 value={profileData.address?.state || ""}
-                readOnly={!isEditing}
-                onChange={(e) =>
-                  setProfileData({
-                    ...profileData,
-                    address: { ...profileData.address, state: e.target.value },
-                  })
-                }
+                readOnly
               />
             </div>
             <div className="profile-input-group">
@@ -103,13 +83,7 @@ const ProfileTab = ({
               <input
                 type="text"
                 value={profileData.address?.city || ""}
-                readOnly={!isEditing}
-                onChange={(e) =>
-                  setProfileData({
-                    ...profileData,
-                    address: { ...profileData.address, city: e.target.value },
-                  })
-                }
+                readOnly
               />
             </div>
             <div className="profile-input-group">
@@ -117,60 +91,58 @@ const ProfileTab = ({
               <input
                 type="text"
                 value={profileData.address?.pincode || ""}
-                readOnly={!isEditing}
-                onChange={(e) =>
-                  setProfileData({
-                    ...profileData,
-                    address: {
-                      ...profileData.address,
-                      pincode: e.target.value,
-                    },
-                  })
-                }
+                readOnly
               />
             </div>
             <div
               className="profile-input-group"
               style={{ gridColumn: "1 / -1" }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "8px",
-                }}
-              >
-                <label style={{ margin: 0 }}>Full Address</label>
-                {isEditing && (
-                  <LocationFetcher
-                    onLocationFetched={(data) => {
-                      const { address, display_name } = data;
-                      setProfileData({
-                        ...profileData,
-                        address: {
-                          ...profileData.address,
-                          city:
-                            address.city ||
-                            address.town ||
-                            address.village ||
-                            profileData.address.city,
-                          state: address.state || profileData.address.state,
-                          line: display_name,
-                        },
-                      });
-                    }}
-                  />
-                )}
-              </div>
+              <label>Full Address</label>
               <textarea
                 value={profileData.address?.line || ""}
-                readOnly={!isEditing}
+                readOnly
                 rows="2"
+              />
+            </div>
+            <div className="profile-input-group">
+              <label>Skill / Service</label>
+              <input
+                type="text"
+                value={profileData.workerDetails?.skill || ""}
+                readOnly
+              />
+            </div>
+            <div className="profile-input-group">
+              <label>Years of Experience</label>
+              <input
+                type="text"
+                value={profileData.workerDetails?.experience || ""}
+                readOnly={!isEditing}
                 onChange={(e) =>
                   setProfileData({
                     ...profileData,
-                    address: { ...profileData.address, line: e.target.value },
+                    workerDetails: {
+                      ...profileData.workerDetails,
+                      experience: e.target.value,
+                    },
+                  })
+                }
+              />
+            </div>
+            <div className="profile-input-group">
+              <label>Service Area (km)</label>
+              <input
+                type="text"
+                value={profileData.workerDetails?.serviceArea || ""}
+                readOnly={!isEditing}
+                onChange={(e) =>
+                  setProfileData({
+                    ...profileData,
+                    workerDetails: {
+                      ...profileData.workerDetails,
+                      serviceArea: e.target.value,
+                    },
                   })
                 }
               />
