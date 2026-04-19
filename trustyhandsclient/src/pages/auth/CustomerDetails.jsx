@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import LocationFetcher from "../../components/LocationFetcher";
+import { API_URL } from '../../utils/api';
 
 const indianStates = [
   "Andhra Pradesh",
@@ -90,7 +91,7 @@ const CustomerDetails = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        `${API_URL}/api/auth/register`,
         payload,
       );
       const user = response.data.user;

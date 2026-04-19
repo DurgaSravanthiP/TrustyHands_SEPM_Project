@@ -12,6 +12,7 @@ import SearchServicesTab from "./CustomerTabs/SearchServicesTab";
 import MyBookingsTab from "./CustomerTabs/MyBookingsTab";
 import MyReviewsTab from "./CustomerTabs/MyReviewsTab";
 import ProfileTab from "./CustomerTabs/ProfileTab";
+import { API_URL } from '../../utils/api';
 
 const CustomerDashboard = () => {
   const { addToast } = useToast();
@@ -75,7 +76,7 @@ const CustomerDashboard = () => {
   const fetchFullProfile = async (userId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/auth/profile/${userId}`,
+        `${API_URL}/api/auth/profile/${userId}`,
       );
       setUser(res.data.user);
       setProfileData({
@@ -102,7 +103,7 @@ const CustomerDashboard = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://localhost:5000/api/bookings/customer/${userId}`,
+        `${API_URL}/api/bookings/customer/${userId}`,
       );
       setBookings(res.data.bookings || []);
     } catch (err) {
@@ -114,7 +115,7 @@ const CustomerDashboard = () => {
 
   const fetchReviews = async (userId) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/admin/feedback`);
+      const res = await axios.get(`${API_URL}/api/admin/feedback`);
       const filtered = (res.data.feedback || []).filter(
         (f) => f.customerId?._id === userId,
       );
@@ -126,7 +127,7 @@ const CustomerDashboard = () => {
 
   const fetchWorkers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/workers");
+      const res = await axios.get(`${API_URL}/api/admin/workers`);
       const approved = (res.data.workers || []).filter(
         (w) => w.workerDetails?.status === "approved" && !w.isSuspended,
       );
@@ -145,7 +146,7 @@ const CustomerDashboard = () => {
       setProfilePhotoData(compressed);
       setProfilePhotoPreview(compressed);
       const res = await axios.put(
-        `http://localhost:5000/api/auth/profile/${user._id}`,
+        `${API_URL}/api/auth/profile/${user._id}`,
         { profilePhoto: compressed },
       );
       setUser(res.data.user);
@@ -168,7 +169,7 @@ const CustomerDashboard = () => {
   const handleCompleteBooking = async (bookingId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/bookings/${bookingId}/status`,
+        `${API_URL}/api/bookings/${bookingId}/status`,
         { status: "completed" },
       );
       addToast("Booking marked as completed");
@@ -187,7 +188,7 @@ const CustomerDashboard = () => {
         profilePhoto: profilePhotoData || profileData.profilePhoto,
       };
       const res = await axios.put(
-        `http://localhost:5000/api/auth/profile/${user._id}`,
+        `${API_URL}/api/auth/profile/${user._id}`,
         payload,
       );
       setUser(res.data.user);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useToast } from "../context/ToastContext";
+import { API_URL } from '../utils/api';
 
 const FeedbackModal = ({ booking, onClose, onComplete }) => {
   const { addToast } = useToast();
@@ -17,7 +18,7 @@ const FeedbackModal = ({ booking, onClose, onComplete }) => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/bookings/feedback", {
+      await axios.post(`${API_URL}/api/bookings/feedback`, {
         bookingId: booking._id,
         customerId: booking.customerId?._id || booking.customerId,
         workerId: booking.workerId?._id || booking.workerId,

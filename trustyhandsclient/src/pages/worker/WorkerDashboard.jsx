@@ -11,6 +11,7 @@ import JobRequestsTab from "./WorkerTabs/JobRequestsTab";
 import MyJobsTab from "./WorkerTabs/MyJobsTab";
 import ReviewsTab from "./WorkerTabs/ReviewsTab";
 import ProfileTab from "./WorkerTabs/ProfileTab";
+import { API_URL } from '../../utils/api';
 
 const WorkerDashboard = () => {
   const { addToast } = useToast();
@@ -74,7 +75,7 @@ const WorkerDashboard = () => {
   const fetchFullProfile = async (userId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/auth/profile/${userId}`,
+        `${API_URL}/api/auth/profile/${userId}`,
       );
       setUser(res.data.user);
       setProfileData({
@@ -117,7 +118,7 @@ const WorkerDashboard = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        `http://localhost:5000/api/bookings/worker/${userId}`,
+        `${API_URL}/api/bookings/worker/${userId}`,
       );
       setBookings(res.data.bookings || []);
     } catch (err) {
@@ -129,7 +130,7 @@ const WorkerDashboard = () => {
 
   const fetchReviews = async (userId) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/admin/feedback`);
+      const res = await axios.get(`${API_URL}/api/admin/feedback`);
       const filtered = (res.data.feedback || []).filter(
         (f) => f.workerId?._id === userId,
       );
@@ -142,7 +143,7 @@ const WorkerDashboard = () => {
   const handleAccept = async (bookingId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/bookings/${bookingId}/status`,
+        `${API_URL}/api/bookings/${bookingId}/status`,
         {
           status: "accepted",
         },
@@ -158,7 +159,7 @@ const WorkerDashboard = () => {
   const updateStatus = async (bookingId, newStatus) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/bookings/${bookingId}/status`,
+        `${API_URL}/api/bookings/${bookingId}/status`,
         { status: newStatus },
       );
       addToast(`Booking marked ${newStatus}`);
@@ -177,7 +178,7 @@ const WorkerDashboard = () => {
       setProfilePhotoData(compressed);
       setProfilePhotoPreview(compressed);
       const res = await axios.put(
-        `http://localhost:5000/api/auth/profile/${user._id}`,
+        `${API_URL}/api/auth/profile/${user._id}`,
         {
           profilePhoto: compressed,
           workerDetails: {
@@ -217,7 +218,7 @@ const WorkerDashboard = () => {
         },
       };
       const res = await axios.put(
-        `http://localhost:5000/api/auth/profile/${user._id}`,
+        `${API_URL}/api/auth/profile/${user._id}`,
         payload,
       );
       setUser(res.data.user);

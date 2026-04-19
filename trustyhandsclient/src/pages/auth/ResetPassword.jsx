@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../styles/Login.css";
+import { API_URL } from '../../utils/api';
 
 const ResetPassword = () => {
     const location = useLocation();
@@ -33,7 +34,7 @@ const ResetPassword = () => {
         setIsLoading(true);
 
         try {
-            await axios.post("http://localhost:5000/api/auth/reset-password", {
+            await axios.post(`${API_URL}/api/auth/reset-password`, {
                 email,
                 password
             });

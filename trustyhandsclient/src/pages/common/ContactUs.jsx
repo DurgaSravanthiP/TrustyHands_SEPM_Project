@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useToast } from "../../context/ToastContext";
 import "../../styles/ContactUs.css";
+import { API_URL } from '../../utils/api';
 
 const ContactUs = () => {
   const { addToast } = useToast();
@@ -35,7 +36,7 @@ const ContactUs = () => {
     setLoading(true);
     
     try {
-      await axios.post("http://localhost:5000/api/contact", {
+      await axios.post(`${API_URL}/api/contact`, {
         name: formData.full_name,
         email: formData.email,
         subject: formData.subject,

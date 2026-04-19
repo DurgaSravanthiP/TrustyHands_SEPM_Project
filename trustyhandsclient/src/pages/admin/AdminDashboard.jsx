@@ -13,6 +13,7 @@ import ManageUsersTab from "./AdminTabs/ManageUsersTab";
 import BookingsTab from "./AdminTabs/BookingsTab";
 import FeedbackTab from "./AdminTabs/FeedbackTab";
 import ContactMessagesTab from "./AdminTabs/ContactMessagesTab";
+import { API_URL } from '../../utils/api';
 
 const AdminDashboard = () => {
   const { addToast } = useToast();
@@ -58,7 +59,7 @@ const AdminDashboard = () => {
   const fetchAdminProfile = async (userId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/auth/profile/${userId}`,
+        `${API_URL}/api/auth/profile/${userId}`,
       );
       setAdminProfile(res.data.user);
       setAdminPhotoPreview(res.data.user.profilePhoto || "");
@@ -70,7 +71,7 @@ const AdminDashboard = () => {
   const fetchPendingWorkers = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/admin/workers/pending",
+        `${API_URL}/api/admin/workers/pending`,
       );
       setPendingWorkers(res.data.pending || []);
     } catch (err) {
@@ -82,11 +83,11 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       const [wRes, bRes, fRes, cRes, uRes] = await Promise.all([
-        axios.get("http://localhost:5000/api/admin/workers"),
-        axios.get("http://localhost:5000/api/admin/bookings"),
-        axios.get("http://localhost:5000/api/admin/feedback"),
-        axios.get("http://localhost:5000/api/contact"),
-        axios.get("http://localhost:5000/api/admin/users"),
+        axios.get(`${API_URL}/api/admin/workers`),
+        axios.get(`${API_URL}/api/admin/bookings`),
+        axios.get(`${API_URL}/api/admin/feedback`),
+        axios.get(`${API_URL}/api/contact`),
+        axios.get(`${API_URL}/api/admin/users`),
       ]);
       setWorkers(wRes.data.workers || []);
       setBookings(bRes.data.bookings || []);
@@ -110,7 +111,7 @@ const AdminDashboard = () => {
   const handleStatusUpdate = async (workerId, status) => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/admin/workers/${workerId}/status`,
+        `${API_URL}/api/admin/workers/${workerId}/status`,
         { status },
       );
       if (
@@ -142,7 +143,7 @@ const AdminDashboard = () => {
       return;
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/admin/users/${workerId}/suspend`,
+        `${API_URL}/api/admin/users/${workerId}/suspend`,
         {
           isSuspended: true,
           reason: "Suspended by Admin",
@@ -166,7 +167,7 @@ const AdminDashboard = () => {
     try {
       const compressed = await compressImage(file, 150, 0.6);
       await axios.put(
-        `http://localhost:5000/api/auth/profile/${adminProfile._id}`,
+        `${API_URL}/api/auth/profile/${adminProfile._id}`,
         {
           profilePhoto: compressed,
         },

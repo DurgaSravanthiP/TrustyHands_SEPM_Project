@@ -3,6 +3,7 @@ import axios from "axios";
 import { useToast } from "../context/ToastContext";
 import LocationFetcher from "./LocationFetcher";
 import "../styles/Register.css";
+import { API_URL } from '../utils/api';
 
 const BookingModal = ({ worker, onClose, onBookingComplete }) => {
   const { addToast } = useToast();
@@ -59,7 +60,7 @@ const BookingModal = ({ worker, onClose, onBookingComplete }) => {
         proposedPrice: Number(formData.proposedPrice),
       };
 
-      await axios.post("http://localhost:5000/api/bookings", payload);
+      await axios.post(`${API_URL}/api/bookings`, payload);
       addToast(
         "Booking request sent successfully! Check your dashboard for updates.",
       );
