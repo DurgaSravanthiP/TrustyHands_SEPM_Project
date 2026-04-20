@@ -1,4 +1,4 @@
-# 🤝 TrustyHands - Premium Service Marketplace
+# 🤝 TrustyHands - Premium Service Booking PlatForm
 
 TrustyHands is a full-stack MERN (MongoDB, Express, React, Node.js) application designed to bridge the gap between local service providers (workers) and customers. It provides a professional platform for booking services like plumbing, electrical work, cleaning, and more.
 
