@@ -23,7 +23,7 @@ TrustyHands is a full-stack MERN (MongoDB, Express, React, Node.js) application 
 - **Backend**: Node.js, Express.js.
 - **Database**: MongoDB (Mongoose ODM).
 - **Authentication**: JWT (JSON Web Tokens) & Bcrypt.js password hashing.
-- **APIs**: OpenStreetMap Nominatim for Reverse Geocoding.
+- **API**: OpenStreetMap Nominatim for Reverse Geocoding.
 
 ---
 
